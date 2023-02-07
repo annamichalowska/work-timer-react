@@ -2,44 +2,44 @@ import React, { Component } from 'react';
 import css from './App.module.css';
 import { nanoid } from 'nanoid';
 
-import ContactForm from './ContactForm/ContactForm';
-import ContactList from './ContactList/ContactList';
+import WorkForm from './WorkForm/WorkForm';
+import WorkList from './WorkList/WorkList';
 import Filter from './Filter/Filter';
 
 class App extends Component {
   state = {
-    contacts: [],
+    works: [],
     filter: '',
   };
 
-  addContact = ({ name, number }) => {
-    const normalizationName = name.toLowerCase();
+  addContact = ({ place, notes }) => {
+    const normalizationWork = place.toLowerCase();
 
-    const alreadyInContacts = this.state.contacts.some(
-      ({ name }) => name.toLocaleLowerCase() === normalizationName
+    const alreadyInWorks = this.state.works.some(
+      ({ place }) => place.toLocaleLowerCase() === normalizationWork
     );
-    if (alreadyInContacts) {
-      alert(`${name} is already in contacts.`);
+    if (alreadyInWorks) {
+      alert(`${place} is already in works.`);
       return;
     }
 
-    const newContact = {
-      name: name,
-      number: number,
+    const newWork = {
+      place: place,
+      notes: notes,
       id: nanoid(),
     };
 
     this.setState(prevState => ({
-      contacts: [...prevState.contacts, newContact],
+      works: [...prevState.works, newWork],
     }));
   };
 
-  getContacts = () => {
-    const { contacts, filter } = this.state;
+  getWorks = () => {
+    const { works, filter } = this.state;
     const normalizationFilter = filter.toLowerCase();
 
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(normalizationFilter)
+    return works.filter(work =>
+      work.place.toLowerCase().includes(normalizationFilter)
     );
   };
 
@@ -47,19 +47,19 @@ class App extends Component {
     this.setState({ filter: e.currentTarget.value });
   };
 
-  deleteContact = contactId => {
+  deleteWork = workId => {
     this.setState(prevState => ({
-      contacts: prevState.contacts.filter(contact => contact.id !== contactId),
+      works: prevState.works.filter(work => work.id !== workId),
     }));
   };
 
   componentDidMount() {
-    const list = localStorage.getItem('contacts-list');
+    const list = localStorage.getItem('works-list');
     if (!list) return;
 
     try {
       this.setState({
-        contacts: JSON.parse(list),
+        works: JSON.parse(list),
       });
     } catch (e) {
       console.error(e);
@@ -67,31 +67,28 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.contacts.length !== this.state.contacts.length) {
-      const contactsListStringified = JSON.stringify(this.state.contacts);
-      localStorage.setItem('contacts-list', contactsListStringified);
+    if (prevState.works.length !== this.state.works.length) {
+      const worksListStringified = JSON.stringify(this.state.works);
+      localStorage.setItem('works-list', worksListStringified);
     }
   }
 
   render() {
-    const { filter, contacts } = this.state;
-    const visibleContacts = this.getContacts();
+    const { filter, works } = this.state;
+    const visibleWorks = this.getWorks();
 
     return (
       <div className={css.box}>
-        <h2 className={css.title}>Phonebook</h2>
-        <ContactForm onSubmit={this.addContact} />
-        <h2 className={css.title}>Contacts</h2>
-        {contacts.length > 0 ? (
+        <h2 className={css.title}>Work Timer</h2>
+        <WorkForm onSubmit={this.addWork} />
+        <h2 className={css.title}>Works List</h2>
+        {works.length > 0 ? (
           <>
             <Filter value={filter} onChange={this.changeFilter} />
-            <ContactList
-              contacts={visibleContacts}
-              deleteContact={this.deleteContact}
-            />
+            <WorkList works={visibleWorks} deleteWork={this.deleteWork} />
           </>
         ) : (
-          <h2 className={css['empty-list']}>Contact list is empty</h2>
+          <h2 className={css['empty-list']}>Work list is empty</h2>
         )}
       </div>
     );

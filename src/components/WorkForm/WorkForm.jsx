@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import css from './ContactForm.module.css';
+import css from './WorkForm.module.css';
 
-class ContactForm extends Component {
+class WorkForm extends Component {
   state = {
-    name: '',
-    number: '',
+    place: '',
+    notes: '',
   };
 
   handleChange = evt => {
-    const { name, value } = evt.target;
-    this.setState({ [name]: value });
+    const { place, value } = evt.target;
+    this.setState({ [place]: value });
   };
 
   handleSubmit = evt => {
@@ -21,25 +21,36 @@ class ContactForm extends Component {
 
   clearForm = () => {
     this.setState(() => ({
-      name: '',
-      number: '',
+      place: '',
+      notes: '',
     }));
   };
 
   render() {
-    const { name, number } = this.state;
+    const { place, notes } = this.state;
 
     return (
       <form className={css.form} onSubmit={this.handleSubmit}>
+        <div className={css['button-box']}>
+          <button className={css.button} type="submit">
+            START
+          </button>
+          <button className={css.button} type="submit">
+            STOP
+          </button>
+          <button className={css.button} type="submit">
+            FINISH
+          </button>
+        </div>
         <label className={css.label}>
-          Name
           <input
             className={css.input}
+            placeholder="Place work"
             id={this.loginInputId}
             onChange={this.handleChange}
-            value={name}
+            value={place}
             type="text"
-            name="name"
+            name="place"
             pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
             title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
             required
@@ -47,24 +58,21 @@ class ContactForm extends Component {
         </label>
 
         <label className={css.label}>
-          Number
           <input
             className={css.input}
+            placeholder="Notes"
             onChange={this.handleChange}
-            value={number}
+            value={notes}
             type="tel"
-            name="number"
+            name="notes"
             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
             title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
             required
           />
         </label>
-        <button className={css.button} type="submit">
-          Add contact
-        </button>
       </form>
     );
   }
 }
 
-export default ContactForm;
+export default WorkForm;
